@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Fake News Detector</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 50px;
+      background-color: #f0f2f5;
+    }
+    h1 {
+      color: #333;
+    }
+    input, button {
+      padding: 10px;
+      font-size: 16px;
+      width: 100%;
+      margin-top: 10px;
+    }
+    #result {
+      margin-top: 20px;
+      font-size: 18px;
+      font-weight: bold;
+      color: #222;
+    }
+  </style>
+</head>
+<body>
+  <h1>🧠 Fake News Detector</h1>
+  <input type="text" id="newsTitle" placeholder="Enter news title...">
+  <button onclick="predict()">Check</button>
+  <div id="result"></div>
+
+  <script>
+    async function predict() {
+      const title = document.getElementById('newsTitle').value;
+      const resultDiv = document.getElementById('result');
+      resultDiv.innerText = '⏳ Checking...';
+
+      try {
+        const response = await fetch('http://127.0.0.1:5000/predict', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ title })
+        });
+
+        const data = await response.json();
+        resultDiv.innerText = `Prediction: ${data.prediction} (${(data.confidence * 100).toFixed(2)}%)`;
+      } catch (error) {
+        resultDiv.innerText = '❌ Error connecting to API.';
+      }
+    }
+  </script>
+</body>
+</html>
